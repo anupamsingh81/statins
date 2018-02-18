@@ -1,0 +1,60 @@
+﻿
+FINEGOLD
+
+
+ (A) Women with half-national average CV risk initiating therapy at 50 years. Mean life expectancy gain 3 months, 96.6% gain no extra lifespan, but the remaining 3.4% gain an average of 92 months. (B) Men with double-national average CV risk initiating therapy at 50 years. Mean life expectancy gain 12 months, 88.9% gain no extra lifespan, but the remaining 11.1% gain an average of 107 months. (C) Women with half-national average CV risk initiating therapy at 80 years. Mean life expectancy gain 2.5 months, 96.4% gain no extra lifespan, but the remaining 3.6% gain an average of 70 months. (D) Men with double-national average CV risk initiating therapy at 80 years. Mean life expectancy gain 6 months, 88.5% gain no extra lifespan, but the remaining 11.5% gain an average of 56 months. CV, cardiovascular; UK ONS, UK Office for National Statistics.
+
+MATLAB
+
+
+80 yr
+1000 female patients
+Cardiovascular event rate = 0.5 times standard UK rate
+Proportion not benefitting = 96.5%
+Mean extension = 91.932 days
+Mean extension for those benefitting = 2626.6 days
+
+R(97.3,41,1554)
+
+
+50 yr
+
+
+1000 female patients
+Cardiovascular event rate = 0.5 times standard UK rate
+Proportion not benefitting = 96.3%
+Mean extension = 129.15 days
+Mean extension for those benefitting = 3490.5 days
+
+R(96.9,75,2431)
+
+
+50 male
+
+1000 male patients
+Cardiovascular event rate = 2 times standard UK rate
+Proportion not benefitting = 87.9%
+Mean extension = 382.54 days
+Mean extension for those benefitting = 3161.4 days
+
+R program(88.1,407,3428)
+
+80 male
+
+1000 male patients
+Cardiovascular event rate = 2 times standard UK rate
+Proportion not benefitting = 87.6%
+Mean extension = 207.31 days
+Mean extension for those benefitting = 1671.8 days
+
+R program(87.9,192,1587)
+
+
+#############R#################
+
+
+
+
+
+
+
