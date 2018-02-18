@@ -1,0 +1,50 @@
+]0;/home/anupam/Documents/statins]0;anupam@anupam-Lenovo-Yoga-500-14IBD: ~/Documents/statins[01;32manupam@anupam-Lenovo-Yoga-500-14IBD[00m:[01;34m~/Documents/statins[00m$ sudo su
+[sudo] password for anupam: 
+]0;root@anupam-Lenovo-Yoga-500-14IBD: /home/anupam/Documents/statinsroot@anupam-Lenovo-Yoga-500-14IBD:/home/anupam/Documents/statins# R
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> install,[K.packages('ggthemes')
+Installing package into ‘/usr/local/lib/R/site-library’
+(as ‘lib’ is unspecified)
+--- Please select a CRAN mirror for use in this session ---
+trying URL 'https://mirrors.nics.utk.edu/cran/src/contrib/ggthemes_3.4.0.tar.gz'
+Content type 'application/x-gzip' length 752935 bytes (735 KB)
+==================================================
+downloaded 735 KB
+
+* installing *source* package ‘ggthemes’ ...
+** package ‘ggthemes’ successfully unpacked and MD5 sums checked
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** preparing package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded
+* DONE (ggthemes)
+
+The downloaded source packages are in
+	‘/tmp/RtmpVG7jbB/downloaded_packages’
+> 

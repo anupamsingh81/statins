@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1518603895241.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "A8CAB617",
+    "lastKnownWriteTime" : 1518754711,
+    "last_content_update" : 1518754711333,
+    "path" : "~/Documents/statins/jj.R",
+    "project_path" : "jj.R",
+    "properties" : {
+        "cursorPosition" : "159,79",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

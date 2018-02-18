@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1518744533016.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "9BC52193",
+    "lastKnownWriteTime" : 1518956879,
+    "last_content_update" : 1518956879453,
+    "path" : "~/Documents/statins/grid.R",
+    "project_path" : "grid.R",
+    "properties" : {
+        "cursorPosition" : "11,0",
+        "scrollLine" : "11",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
