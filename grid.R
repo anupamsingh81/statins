@@ -2,6 +2,10 @@
 
 rm(list =ls())
 
+library(SyncRNG)
+set.seed(123456,'user','user')
+
+
 aa = read_csv('mortal2.csv')
 
 

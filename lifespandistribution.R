@@ -1,6 +1,9 @@
 
 rm(list=ls()) # clear all
 
+library(SyncRNG)
+set.seed(123456,'user','user')
+
 # Number of patients
 
 n_patients=1000
@@ -17,15 +20,14 @@ baseline_CVD_hazard_ratio=0.5
 # Below the start age, patients never have the intervention. From the start ageonwards, each patient is "run" with one set of chance, twice - once withoutintervention (control) and once with (treated)
 
 hazard_reduction=0.3
-start_age_years= 80
+start_age_years= 50
 
 max_age_years=150
 max_age_days=max_age_years*365
 
 
-write.table(mortal,"mort.txt")
 
-mortal= read.csv('https://raw.githubusercontent.com/anupamsingh81/statins/master/mortal2.csv') 
+mortal= read.csv('mortal2.csv') 
 mort= subset(mortal,sex==gender)
 
 
@@ -75,8 +77,6 @@ days1= function(x){
 
 options(scipen=999) # removing scientific notation
 
-set.seed(1)
-
 m =matrix(runif(n=max_age_days*n_patients), ncol=n_patients) # generating a random matrix of values between 0 and 1 which follow a uniform distribution
 
 
@@ -87,8 +87,7 @@ rm(m)
 
 extra=treated_life_days-control_life_days
 
-x1 = paste('The mean lifespan gain in beneficiaries is',mean(extra),' days.The percentage of those benefitting is ',(sum(extra>0)/n_patients)*100,
-           ' percent. The life span gain in these beneficiaries is',round((sum(extra)/sum(extra>0))/365,2), ' years.',sep =" ")
+x1 = paste('Among ',n_patients,' ',gender,' with',baseline_CVD_hazard_ratio,'times average risk started on therapy at ',start_age_years,'years of age.The percentage of those benefitting is ',(sum(extra>0)/n_patients)*100,' percent,while rest will have zero benefit. The mean overall lifespan gain is',round(mean(extra)/30,2),'months. The life span gain in the lucky beneficiaries is',round((sum(extra)/sum(extra>0))/30,2), ' months.',sep =" ")
 
 
-x1
+cat(x1)
