@@ -1,4 +1,4 @@
-﻿
+
 FINEGOLD
 
 
@@ -51,6 +51,17 @@ R program(87.9,192,1587)
 
 
 #############R#################
+
+NEW PROGRAM - lifespanfunction.R
+
+lifespandays(start_age_years = 80,baseline_CVD_hazard_ratio = 2,gender="male")
+Among  1000   male  with 2 times average risk started on therapy at  80 years of age.The percentage of those benefitting is  10.6  percent,while rest will have zero benefit. The mean overall lifespan gain is 5.78 months. The life span gain in the lucky beneficiaries is 54.5  months.
+> lifespandays(start_age_years = 50,baseline_CVD_hazard_ratio = 2,gender="male")
+Among  1000   male  with 2 times average risk started on therapy at  50 years of age.The percentage of those benefitting is  9.9  percent,while rest will have zero benefit. The mean overall lifespan gain is 10.67 months. The life span gain in the lucky beneficiaries is 107.83  months.
+> lifespandays(start_age_years = 50,baseline_CVD_hazard_ratio = 0.5,gender="female")
+Among  1000   female  with 0.5 times average risk started on therapy at  50 years of age.The percentage of those benefitting is  2.9  percent,while rest will have zero benefit. The mean overall lifespan gain is 2.86 months. The life span gain in the lucky beneficiaries is 98.69  months.
+> lifespandays(start_age_years = 80,baseline_CVD_hazard_ratio = 0.5,gender="female")
+Among  1000   female  with 0.5 times average risk started on therapy at  80 years of age.The percentage of those benefitting is  3.9  percent,while rest will have zero benefit. The mean overall lifespan gain is 2.43 months. The life span gain in the lucky beneficiaries is 62.35  months.
 
 
 
