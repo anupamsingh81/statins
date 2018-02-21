@@ -28,7 +28,11 @@ days1= function(x){
 
  
  lifespan = function(start_age_years,gender,baseline_CVD_hazard_ratio,max_age_years=150,hazard_reduction=0.3,n_patients=1000){
- mortality= aa %>% 
+ 
+   library(SyncRNG)
+   set.seed(123456,'user','user')
+   
+   mortality= aa %>% 
    filter(sex==gender) %>% 
    select(-X1) 
  
@@ -66,12 +70,9 @@ days1= function(x){
    mutate(p_death_daily_untreated=ifelse(day<=start_age_years*365,0,p_death_daily_untreated) ) # probability of death in untreated will be zero since start date
  
  assign("df4",df5,envir = .GlobalEnv)
- ab = df4$p_death_daily_treated
- bc = df4$p_death_daily_untreated
  
  options(scipen=999) # removing scientific notation
  
- set.seed(1)
  
  m =matrix(runif(n=max_age_days*n_patients), ncol=n_patients)
  
@@ -102,8 +103,34 @@ days1= function(x){
 
 jj= kk %>% pmap_df(lifespan)
 
+jm = kk %>% pmap_df(lifespan)
 
-jk=jj %>% group_by(age=as.factor(age),risk=as.factor(risk),sex=as.factor(sex)) %>% 
+rm(jk1)
+
+ll = read.csv('summary.csv',stringsAsFactors = FALSE)
+
+ll=ll %>% select(V4,V3,V2,V6,V5,V7)
+vecnam = names(jk)
+vecnam=vecnam[1:6]
+names(ll)=vecnam
+
+summary(ll)
+
+lk1=ll %>% mutate(lifespangain=round(lifespangain*30,2),lifespangain_months=round(lifespangain/30,2)) %>% 
+  mutate(lifespan_gain_in_beneficiary=round(lifespan_gain_in_beneficiary*30,2),lifespan_gain_in_beneficiary_months=round(lifespangain/30,2)) %>% 
+  mutate(lifespan_gain_in_beneficiary_yrs=round(lifespan_gain_in_beneficiary/365,2)) %>% 
+  mutate(risk=case_when(risk=="0.5"~"Low_risk",
+                        risk=="1"~"Average_risk",
+                        TRUE ~ "High_risk")) %>% 
+  mutate(risk=factor(risk,levels = c("Low_risk","Average_risk","High_risk"))) %>% 
+  mutate(risk_category=str_c(risk,sex,sep="_")) %>% 
+  mutate(risk_category=fct_inorder(risk_category)) %>% 
+  mutate(decade=fct_inorder(as.character(age%/%10 +1))) 
+
+  
+  
+
+jk1=jm %>% group_by(age=as.factor(age),risk=as.factor(risk),sex=as.factor(sex)) %>% 
   summarise(lifespangain=mean(extra),percentage_benefit = (sum(extra>0)/1000)*100,
              lifespan_gain_in_beneficiary = sum(extra)/sum(extra>0)) %>%
   mutate(lifespan_gain_in_beneficiary_yrs=round(lifespan_gain_in_beneficiary/365,2)) %>% 
@@ -122,56 +149,58 @@ summary(jk)
 
 # lifespan gain male vs female at same risk
 
-jk %>%filter(risk==1) %>%  ggplot(aes(x=age,y=lifespangain,group=as.factor(sex),color=as.factor(sex)))+geom_line()+
+lk1 %>%filter(risk=="Low_risk") %>%  ggplot(aes(x=age,y=lifespangain,group=as.factor(sex),color=as.factor(sex)))+geom_line()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
 # lifespangainmale at various level of risk
-jk %>%filter(sex=="male") %>%  ggplot(aes(x=age,y=lifespangain,group=as.factor(risk),color=as.factor(risk)))+geom_line()+
+lk1 %>%filter(sex=="male") %>%  ggplot(aes(x=age,y=lifespangain,group=as.factor(risk),color=as.factor(risk)))+geom_line()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
 #  percentage benefit  age male
-jk %>%filter(sex=="male") %>%  ggplot(aes(x=age,y=percentage_benefit,group=as.factor(risk),color=as.factor(risk)))+geom_line()+
+lk1 %>%filter(sex=="male") %>%  ggplot(aes(x=age,y=percentage_benefit,group=as.factor(risk),color=as.factor(risk)))+geom_line()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 #  percentage benefit vs age female
-jk %>%filter(sex=="female") %>%  ggplot(aes(x=age,y=percentage_benefit,group=as.factor(risk),color=as.factor(risk)))+geom_line()+
+lk1 %>%filter(sex=="female") %>%  ggplot(aes(x=age,y=percentage_benefit,group=as.factor(risk),color=as.factor(risk)))+geom_line()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 # lifespan gain in beneficiary age
 
-jk %>%filter(sex=="male") %>%  ggplot(aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=as.factor(risk),color=as.factor(risk)))+geom_line()+
+lk1 %>%filter(sex=="male") %>%  ggplot(aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=as.factor(risk),color=as.factor(risk)))+geom_line()+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 # map
 
-jk  %>% split(.$risk) %>% map(~ggplot(data=.,aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=sex,color=sex))+geom_line()+
+lk1 %>% arrange(age) %>% View()
+
+lk1  %>% split(.$risk) %>% map(~ggplot(data=.,aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=sex,color=sex))+geom_line()+
                                                              theme(axis.text.x = element_text(angle = 90, hjust = 1)))
 
 
-jk  %>% split(.$risk) %>% map(~ggplot(data=.,aes(x=age,y=percentage_benefit,group=sex,color=sex))+
+lk1  %>% split(.$risk) %>% map(~ggplot(data=.,aes(x=age,y=percentage_benefit,group=sex,color=sex))+
                                 stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  theme(axis.text.x = element_text(angle = 90, hjust = 1))) 
 
 
-jk  %>% split(.$risk) %>% map(~ggplot(data=.,aes(x=age,y=percentage_benefit,group=sex,color=sex))+
+lk1  %>% split(.$risk) %>% map(~ggplot(data=.,aes(x=age,y=percentage_benefit,group=sex,color=sex))+
                                 geom_line()  +  theme(axis.text.x = element_text(angle = 90, hjust = 1))) 
 
-jk %>% ggplot(aes(x=age,y=percentage_benefit,group=sex,color=sex))+
+lk1 %>% ggplot(aes(x=age,y=percentage_benefit,group=sex,color=sex))+
              stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   facet_wrap(~risk,ncol=1)
 
 
-jk %>% ggplot(aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=sex,color=sex))+
+lk1 %>% ggplot(aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=sex,color=sex))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   facet_wrap(~risk,ncol=1)
 
 
-jk %>% ggplot(aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=sex,color=sex))+
+lk1 %>% ggplot(aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=sex,color=sex))+
   geom_line()   +  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   facet_wrap(~risk,ncol=1)
 
-jk %>% ggplot(aes(x=age,y=percentage_benefit,group=sex,color=sex))+
+lk1 %>% ggplot(aes(x=age,y=percentage_benefit,group=sex,color=sex))+
   geom_line()   +  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   facet_wrap(~risk,ncol=1)
 
@@ -182,20 +211,20 @@ jk %>% ggplot(aes(x=age,y=percentage_benefit,group=sex,color=sex))+
 fct_inorder(jk$risk_category)
 
 # Risk category_lifespan
-jk %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
+lk1 %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
 ggplot(aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=risk_category,color=risk_category))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 
 # Risk category_lifespan_boxplot
-jk %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
+lk1 %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
   ggplot(aes(x=risk_category,y=lifespan_gain_in_beneficiary_yrs,fill=risk_category))+
  geom_boxplot()+coord_flip()
 
 library(ggjoy)
 
-jk %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
+lk1 %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
   ggplot(aes(y=risk_category,x=lifespan_gain_in_beneficiary_yrs,fill=risk_category))+
   geom_joy()
 
@@ -205,14 +234,15 @@ jk$age=as.numeric(jk$age)
 cut_number(jk$age,10)
 cut_width(jk$age,10)
 cut_interval(jk$age,10)
+
 # Risk category_lifespangain_average
-jk %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
+lk1 %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
   ggplot(aes(x=age,y=lifespangain,group=risk_category,color=risk_category))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 # Good line plot annotate
-jk %>% 
+lk1 %>% 
   ggplot(aes(x=age,y=lifespan_gain_in_beneficiary_yrs,group=risk_category,color=fct_reorder2(risk_category,age,lifespan_gain_in_beneficiary_yrs)))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -226,9 +256,10 @@ jk.labels <- data.frame(
   risk_category= c("Average_risk_male", "High_risk_male")
 )
 
+library(ggrepel)
 jk.labels2=jk %>% group_by(risk_category) %>% summarise(age=mean(age),lifespangain=max(lifespangain))
 
-jk %>% 
+lk1 %>% 
   ggplot(aes(x=age,y=lifespangain,group=risk_category,color=fct_reorder2(risk_category,age,lifespangain)))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -239,37 +270,37 @@ jk %>%
 
 
 # Risk category_percentage
-jk %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
+lk1 %>% mutate(risk_category=fct_inorder(risk_category)) %>% 
   ggplot(aes(x=age,y=percentage_benefit,group=risk_category,color=risk_category))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
-jk %>% 
+lk1 %>% 
   ggplot(aes(x=age,y=percentage_benefit,group=risk_category,color=fct_reorder2(risk_category,age,percentage_benefit)))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 
 ##3risk category splot
-jk %>% split(.$risk_category) %>% 
+lk1 %>% split(.$risk_category) %>% 
   map(~ggplot(data=.,aes(x=lifespan_gain_in_beneficiary_yrs,y=percentage_benefit))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1)))
 
-jk %>% ggplot(aes(x=lifespan_gain_in_beneficiary_yrs,y=percentage_benefit))+
+lk1 %>% ggplot(aes(x=lifespan_gain_in_beneficiary_yrs,y=percentage_benefit))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   geom_point(aes(color=decade))+
   facet_wrap(~risk_category,nrow=3)
 
-jk %>% ggplot(aes(x=decade,y=lifespangain))+
+lk1 %>% ggplot(aes(x=decade,y=lifespangain))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   geom_boxplot()+
   facet_wrap(~risk_category,nrow=3)
   
 
-jk %>% ggplot(aes(x=decade,y=lifespan_gain_in_beneficiary_yrs))+
+lk1 %>% ggplot(aes(x=decade,y=lifespan_gain_in_beneficiary_yrs))+
   stat_smooth(method = "loess", formula = y ~ x, size = 1,se=FALSE)   +  
   theme(axis.text.x = element_text(angle = 90, hjust = 1))+
   geom_boxplot()+
@@ -277,16 +308,16 @@ jk %>% ggplot(aes(x=decade,y=lifespan_gain_in_beneficiary_yrs))+
 
 
 # decade percentage
-jk %>% mutate(decade=fct_inorder(as.character(age%/%10))) %>% 
+lk1 %>% mutate(decade=fct_inorder(as.character(age%/%10))) %>% 
   ggplot(aes(x=decade,y=percentage_benefit,fill=decade))+
   geom_boxplot()
 
 # decade lifespan
-jk %>% mutate(decade=fct_inorder(as.character(age%/%10))) %>% 
+lk1 %>% mutate(decade=fct_inorder(as.character(age%/%10))) %>% 
   ggplot(aes(x=decade,y=lifespan_gain_in_beneficiary_yrs,fill=decade))+
   geom_boxplot()
 
-jk %>% mutate(decade=fct_inorder(as.character(age%/%10))) %>% 
+lk1 %>% mutate(decade=fct_inorder(as.character(age%/%10))) %>% 
   ggplot(aes(x=lifespan_gain_in_beneficiary_yrs,color=decade))+
   geom_freqpoly(binwidth=0.5)
 

@@ -5,6 +5,8 @@ library(SyncRNG)
 set.seed(123456,'user','user')
 
 lifespandays = function(start_age_years,gender,baseline_CVD_hazard_ratio,max_age_years=150,hazard_reduction=0.3,n_patients=1000){
+  library(SyncRNG)
+  set.seed(123456,'user','user')
   
   
   mortal= read.csv('https://raw.githubusercontent.com/anupamsingh81/statins/master/mortal2.csv') 
